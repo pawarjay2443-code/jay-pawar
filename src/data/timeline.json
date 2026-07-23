@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "title": "Graphic Design Foundations",
+    "description": "Completed an 8-month Professional Graphic Design course. Learned CorelDRAW, Photoshop, Illustrator, and Canva.",
+    "year": "2023"
+  },
+  {
+    "id": "2",
+    "title": "Entering Web Engineering",
+    "description": "Started Diploma in Information Technology. Mastered the fundamentals of HTML, CSS, JavaScript, and React.",
+    "year": "2024"
+  },
+  {
+    "id": "3",
+    "title": "Full Stack Architecture",
+    "description": "Started building full-stack applications using Next.js, Firebase, and Supabase. Engineered and deployed multiple production-ready websites.",
+    "year": "2025"
+  },
+  {
+    "id": "4",
+    "title": "AI & Automation",
+    "description": "Focused on AI-powered applications, BrowserPilot AI, Scalerix, automation tools, and modern web engineering.",
+    "year": "2026"
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "browserpilot-ai",
+    "title": "BrowserPilot AI",
+    "tagline": "Autonomous Web Agent",
+    "overview": "BrowserPilot AI is an autonomous web agent that navigates the internet, parses complex DOM structures, and extracts relevant information or performs actions on behalf of the user.",
+    "problem": "Navigating complex and dynamic web pages programmatically is difficult and prone to breaking when DOM structures change.",
+    "solution": "Developed a resilient, AI-driven engine using Gemini to visually and semantically understand page layouts instead of relying on hardcoded CSS selectors.",
+    "architecture": "Next.js frontend communicating with a Node.js backend running Playwright, orchestrated by the Gemini API for decision making.",
+    "techStack": ["Next.js", "TypeScript", "Gemini API", "Playwright", "Tailwind CSS"],
+    "features": [
+      "Semantic DOM Parsing",
+      "Autonomous Form Filling",
+      "Data Extraction to JSON",
+      "Headless Browser Orchestration"
+    ],
+    "challenges": "Handling CAPTCHAs and dynamically loaded React/Vue SPA content required advanced waiting strategies and visual fallback mechanisms.",
+    "lessonsLearned": "Deepened understanding of headless browser performance optimization and LLM prompt engineering for structural data extraction.",
+    "futureImprovements": "Adding support for multi-step authenticated workflows and a visual node-based scenario builder.",
+    "github": "https://github.com/pawarjay2443-code",
+    "liveDemo": "https://browserpilot.vercel.app",
+    "coverImage": "/images/projects/browserpilot/cover.jpg",
+    "screenshots": [
+      "/images/projects/browserpilot/screen1.jpg",
+      "/images/projects/browserpilot/screen2.jpg"
+    ],
+    "relatedProjects": ["scalerix", "billingnote"]
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "1",
+    "category": "Graphic Design",
+    "items": ["Logo Design", "Brand Identity", "Social Media Creatives", "Posters"]
+  },
+  {
+    "id": "2",
+    "category": "UI/UX Design",
+    "items": ["Wireframing", "Prototyping", "User Research", "Figma Auto Layout"]
+  },
+  {
+    "id": "3",
+    "category": "Soft Skills",
+    "items": ["Creative Thinking", "Problem Solving", "Storytelling", "Client Communication"]
+  }
+]
