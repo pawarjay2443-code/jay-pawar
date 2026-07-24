@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ExternalLink, ArrowUpRight } from "lucide-react";
 import { MagneticButton } from "../ui/MagneticButton";
+import Image from "next/image";
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -19,6 +20,7 @@ const projects = [
     link: "https://lalit-publication.web.app/",
     github: "https://github.com/pawarjay2443-code",
     featured: true,
+    image: "/projects/lalitpublication.png"
   },
   {
     title: "Aqua Vision",
@@ -28,6 +30,7 @@ const projects = [
     link: "https://aqua-viision.vercel.app/",
     github: "https://github.com/pawarjay2443-code",
     featured: false,
+    image: "/projects/aqua-viision.png"
   }
 ];
 
@@ -61,10 +64,22 @@ export function FeaturedProjects() {
               <div className={`flex flex-col ${index % 2 !== 0 ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-12 lg:gap-24 items-center`}>
                 
                 {/* Project Visual */}
-                <div className="w-full lg:w-[55%] relative rounded-3xl overflow-hidden bg-neutral-50 aspect-[16/10] border border-black/5 shadow-sm group-hover:shadow-xl transition-shadow duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10 pointer-events-none" />
-                  <div className="w-full h-full flex flex-col items-center justify-center text-neutral-300 transition-transform duration-700 group-hover:scale-[1.02] p-8 text-center">
-                    <span className="text-2xl font-bold tracking-widest uppercase opacity-30 mb-2">{project.title}</span>
+                <div className="w-full lg:w-[55%] relative rounded-3xl bg-neutral-100 aspect-video border border-black/5 p-4 lg:p-6 shadow-sm group-hover:shadow-xl transition-shadow duration-500 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10 pointer-events-none rounded-3xl" />
+                  
+                  <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg border border-black/10 bg-white group-hover:shadow-2xl transition-shadow duration-500 flex items-center justify-center">
+                    {project.image ? (
+                      <Image 
+                        src={project.image} 
+                        alt={project.title} 
+                        fill 
+                        className={`transition-transform duration-700 group-hover:scale-[1.02] ${project.title === 'Aqua Vision' ? 'object-contain' : 'object-cover object-top'}`}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-neutral-300 transition-transform duration-700 group-hover:scale-[1.02] p-8 text-center bg-neutral-50">
+                        <span className="text-2xl font-bold tracking-widest uppercase opacity-30 mb-2">{project.title}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -116,3 +131,4 @@ export function FeaturedProjects() {
     </section>
   );
 }
+

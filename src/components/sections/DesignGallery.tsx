@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Image as ImageIcon } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
 
 // Placeholder data since no images were uploaded yet.
-// When you upload images to public/designs/, just update this array.
 const designProjects = [
   {
     id: 1,
-    title: "Minimalist Brand Identity",
+    title: "Brand Identity",
     category: "Brand Identity",
     year: "2024",
     tools: ["Illustrator", "Photoshop"],
     description: "A complete brand identity design focusing on minimalism and typography for a modern tech startup.",
-    imageUrl: "/designs/placeholder-1.jpg", 
+    imageUrl: "/design/branding/branding.png", 
   },
   {
     id: 2,
@@ -23,43 +23,43 @@ const designProjects = [
     year: "2024",
     tools: ["CorelDRAW", "Canva"],
     description: "An elegant, premium menu design for a high-end restaurant, combining rich textures with clean serif typography.",
-    imageUrl: "/designs/placeholder-2.jpg",
+    imageUrl: "/design/menu/menu1.png",
   },
   {
     id: 3,
-    title: "AI Automation Poster",
-    category: "Poster Design",
-    year: "2025",
-    tools: ["Photoshop", "Figma"],
-    description: "A striking poster design promoting an AI automation workshop, utilizing futuristic themes and high-contrast colors.",
-    imageUrl: "/designs/placeholder-3.jpg",
+    title: "Cafe Menu Layout",
+    category: "Menu Cards",
+    year: "2024",
+    tools: ["Photoshop", "Illustrator"],
+    description: "A beautiful and structured menu layout designed to highlight signature dishes.",
+    imageUrl: "/design/menu/menu2.png",
   },
   {
     id: 4,
-    title: "Tech Startup Logo",
+    title: "Jay Graphic Design Logo",
     category: "Logo Design",
     year: "2024",
     tools: ["Illustrator"],
     description: "A bold, scalable vector logo designed for a SaaS company, emphasizing connectivity and speed.",
-    imageUrl: "/designs/placeholder-4.jpg",
+    imageUrl: "/design/logos/jay-graphic-design.png",
   },
   {
     id: 5,
+    title: "Scalerix Logo",
+    category: "Logo Design",
+    year: "2025",
+    tools: ["Illustrator", "Figma"],
+    description: "A modern startup logo emphasizing growth and scalability.",
+    imageUrl: "/design/logos/scalerix.png",
+  },
+  {
+    id: 6,
     title: "Social Media Campaign",
     category: "Social Media",
     year: "2025",
     tools: ["Figma", "Canva"],
     description: "A cohesive set of social media templates designed for high engagement and brand consistency.",
-    imageUrl: "/designs/placeholder-5.jpg",
-  },
-  {
-    id: 6,
-    title: "AI Assisted Artwork",
-    category: "AI Assisted Designs",
-    year: "2026",
-    tools: ["Midjourney", "Photoshop"],
-    description: "Conceptual artwork blending AI generation with manual retouching for a surreal digital experience.",
-    imageUrl: "/designs/placeholder-6.jpg",
+    imageUrl: "/design/social/social.png",
   }
 ];
 
@@ -67,15 +67,40 @@ const categories = ["All", ...new Set(designProjects.map(p => p.category))];
 
 export function DesignGallery() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [selectedProject, setSelectedProject] = useState<typeof designProjects[0] | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const filteredProjects = activeCategory === "All" 
     ? designProjects 
     : designProjects.filter(p => p.category === activeCategory);
 
+  const openLightbox = (index: number) => setSelectedIndex(index);
+  const closeLightbox = () => setSelectedIndex(null);
+
+  const goToPrev = useCallback(() => {
+    if (selectedIndex === null) return;
+    setSelectedIndex((prev) => (prev === 0 ? filteredProjects.length - 1 : (prev as number) - 1));
+  }, [selectedIndex, filteredProjects.length]);
+
+  const goToNext = useCallback(() => {
+    if (selectedIndex === null) return;
+    setSelectedIndex((prev) => (prev === filteredProjects.length - 1 ? 0 : (prev as number) + 1));
+  }, [selectedIndex, filteredProjects.length]);
+
+  // Handle Keyboard Navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedIndex === null) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") goToPrev();
+      if (e.key === "ArrowRight") goToNext();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedIndex, goToPrev, goToNext]);
+
   return (
     <section id="designs" className="py-24 bg-background relative min-h-screen">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -94,7 +119,7 @@ export function DesignGallery() {
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-colors ${
                 activeCategory === category 
                   ? "bg-black text-white" 
                   : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
@@ -105,86 +130,142 @@ export function DesignGallery() {
           ))}
         </div>
 
-        {/* Gallery Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Uniform Gallery Grid */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence>
-            {filteredProjects.map((project) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                key={project.id}
-                onClick={() => setSelectedProject(project)}
-                className="group relative aspect-square rounded-2xl overflow-hidden bg-neutral-100 cursor-pointer border border-black/5"
-              >
-                {/* Fallback visual if no image */}
-                <div className="absolute inset-0 flex items-center justify-center text-neutral-300 transition-transform duration-700 group-hover:scale-105">
-                   <ImageIcon className="w-16 h-16 opacity-20" />
-                   <span className="absolute bottom-4 left-4 text-xs font-bold uppercase tracking-widest text-neutral-400">Placeholder Image</span>
-                </div>
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 z-10">
-                  <span className="text-white/70 text-xs font-medium uppercase tracking-wider mb-1">{project.category}</span>
-                  <h3 className="text-white text-xl font-semibold">{project.title}</h3>
-                </div>
-              </motion.div>
-            ))}
+            {filteredProjects.map((project, index) => {
+              const isLogo = project.category === "Logo Design";
+              const isMenu = project.category === "Menu Cards";
+
+              return (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                  key={project.id}
+                  onClick={() => openLightbox(index)}
+                  className="group relative rounded-3xl bg-neutral-100 aspect-square border border-black/5 p-6 lg:p-8 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer w-full hover:scale-[1.03]"
+                >
+                  {/* Subtle top gradient overlay matching Lalit card */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10 pointer-events-none rounded-3xl" />
+                  
+                  {/* Inner White Container */}
+                  <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg border border-black/10 bg-white group-hover:shadow-2xl transition-all duration-500 flex items-center justify-center p-4">
+                    
+                    {isLogo ? (
+                       <div className="relative w-[60%] h-[60%]">
+                         <Image 
+                           src={project.imageUrl} 
+                           alt={project.title} 
+                           fill 
+                           className="object-contain transition-transform duration-700 group-hover:scale-110" 
+                         />
+                       </div>
+                    ) : (
+                       <div className={`relative w-full h-full flex items-center justify-center ${isMenu ? '[clip-path:inset(1.5%)] scale-[1.02]' : ''}`}>
+                         <Image 
+                           src={project.imageUrl} 
+                           alt={project.title} 
+                           fill
+                           className="object-contain transition-transform duration-700 group-hover:scale-105" 
+                         />
+                       </div>
+                    )}
+
+                    {/* Dark Hover Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 z-20 pointer-events-none rounded-2xl">
+                      <span className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        {project.category}
+                      </span>
+                      <h3 className="text-white text-xl md:text-2xl font-bold tracking-tight transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        {project.title}
+                      </h3>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </motion.div>
       </div>
 
-      {/* Fullscreen Modal */}
+      {/* Fullscreen Lightbox */}
       <AnimatePresence>
-        {selectedProject && (
+        {selectedIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl p-4 md:p-10"
-            onClick={() => setSelectedProject(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl p-4 md:p-10"
+            onClick={closeLightbox}
           >
+            {/* Close Button */}
             <button 
-              className="absolute top-6 right-6 p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors"
-              onClick={() => setSelectedProject(null)}
+              className="absolute top-6 right-6 p-3 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors z-50"
+              onClick={closeLightbox}
             >
               <X className="w-6 h-6" />
             </button>
 
+            {/* Navigation Buttons */}
+            {filteredProjects.length > 1 && (
+              <>
+                <button 
+                  className="absolute left-6 top-1/2 -translate-y-1/2 p-4 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors z-50 hidden md:block"
+                  onClick={(e) => { e.stopPropagation(); goToPrev(); }}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button 
+                  className="absolute right-6 top-1/2 -translate-y-1/2 p-4 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors z-50 hidden md:block"
+                  onClick={(e) => { e.stopPropagation(); goToNext(); }}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+
             <motion.div 
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 20, opacity: 0 }}
-              className="flex flex-col lg:flex-row max-w-7xl w-full max-h-full bg-neutral-900 rounded-2xl overflow-hidden border border-white/10"
+              key={selectedIndex}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+              className="flex flex-col lg:flex-row max-w-[90vw] max-h-[90vh] bg-neutral-900 rounded-[32px] overflow-hidden border border-white/10 shadow-2xl relative"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Image Area */}
-              <div className="w-full lg:w-2/3 bg-black aspect-video lg:aspect-auto flex items-center justify-center relative">
-                <ImageIcon className="w-24 h-24 text-white/10" />
-                <span className="absolute bottom-6 text-sm text-white/30 uppercase tracking-widest">Image preview placeholder</span>
+              <div className="w-full lg:max-w-4xl bg-[#0a0a0a] flex items-center justify-center relative overflow-y-auto overflow-x-hidden p-0">
+                <Image 
+                  src={filteredProjects[selectedIndex].imageUrl} 
+                  alt={filteredProjects[selectedIndex].title} 
+                  width={1600}
+                  height={1600}
+                  className={`w-full h-auto object-contain ${filteredProjects[selectedIndex].category === 'Logo Design' ? 'max-w-[70%] p-10' : ''}`} 
+                />
               </div>
               
               {/* Details Area */}
-              <div className="w-full lg:w-1/3 p-8 lg:p-12 flex flex-col justify-center bg-neutral-950">
-                <div className="flex justify-between items-start mb-4">
-                  <span className="px-3 py-1 bg-white/10 text-white text-xs font-medium rounded-full uppercase tracking-wider">
-                    {selectedProject.category}
+              <div className="w-full lg:w-96 p-8 lg:p-12 flex flex-col justify-center bg-neutral-950 shrink-0 border-l border-white/5">
+                <div className="flex justify-between items-start mb-6">
+                  <span className="px-4 py-1.5 bg-white/10 text-white text-xs font-semibold rounded-full uppercase tracking-widest">
+                    {filteredProjects[selectedIndex].category}
                   </span>
-                  <span className="text-neutral-500 font-medium">{selectedProject.year}</span>
+                  <span className="text-neutral-500 font-medium">{filteredProjects[selectedIndex].year}</span>
                 </div>
                 
-                <h2 className="text-3xl font-bold text-white mb-6">{selectedProject.title}</h2>
+                <h2 className="text-3xl font-bold text-white mb-6 leading-tight">{filteredProjects[selectedIndex].title}</h2>
                 <p className="text-neutral-400 text-base leading-relaxed mb-8">
-                  {selectedProject.description}
+                  {filteredProjects[selectedIndex].description}
                 </p>
                 
                 <div>
-                  <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Tools Used</h4>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-4">Tools Used</h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedProject.tools.map(tool => (
-                      <span key={tool} className="px-3 py-1 border border-white/10 text-neutral-300 text-sm rounded-md">
+                    {filteredProjects[selectedIndex].tools.map(tool => (
+                      <span key={tool} className="px-3 py-1.5 bg-white/5 border border-white/10 text-neutral-300 text-xs font-medium rounded-lg">
                         {tool}
                       </span>
                     ))}
