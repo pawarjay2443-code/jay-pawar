@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, Send, Loader2 } from "lucide-react";
 import { MagneticButton } from "../ui/MagneticButton";
 import { toast } from "sonner";
+import { submitContactMessage } from "../../services/contact";
 
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
@@ -44,21 +45,11 @@ export function ContactForm() {
     setStatus("loading");
 
     try {
-      // Replace with actual Formspree ID
-      const response = await fetch("https://formspree.io/f/YOUR_FORMSPREE_ID", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        toast.success("Message sent successfully! I'll get back to you within 24 hours.");
-        setFormData({ name: "", email: "", message: "" });
-      } else {
-        toast.error("Failed to send message. Please ensure the Formspree ID is set, or email me directly.");
-      }
+      await submitContactMessage(formData);
+      toast.success("Message sent successfully! I'll get back to you within 24 hours.");
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred. Please try again.");
     } finally {
       setStatus("idle");
     }
@@ -81,21 +72,22 @@ export function ContactForm() {
                 <Mail className="w-8 h-8 text-black" />
               </div>
               <h2 className="text-4xl md:text-6xl font-bold text-black mb-6 tracking-tight">
-                Let's build<br />something extraordinary.
+                Let's Build Something Great
               </h2>
               <p className="text-neutral-500 text-lg mb-10 leading-relaxed max-w-md mx-auto md:mx-0">
-                Whether you have a revolutionary idea, require advanced AI integration, or need a premium web application, I am ready to turn your vision into reality.
+                I'm always interested in new ideas, freelance projects, AI applications, full stack development, and creative collaborations. If you'd like to work together or have any questions, feel free to reach out.
               </p>
               
               <div className="space-y-3 text-sm font-semibold text-black uppercase tracking-wider">
                 <p className="flex items-center gap-3 justify-center md:justify-start">
-                  <span className="w-2 h-2 rounded-full bg-black/20" /> Based in India.
+                  <span className="w-2 h-2 rounded-full bg-black/20" /> Maharashtra, India
                 </p>
                 <p className="flex items-center gap-3 justify-center md:justify-start">
-                  <span className="w-2 h-2 rounded-full bg-black/20" /> Working globally.
+                  <span className="w-2 h-2 rounded-full bg-black/20" /> Available for Freelance
                 </p>
                 <p className="flex items-center gap-3 justify-center md:justify-start">
-                  <span className="w-2 h-2 rounded-full bg-black/20" /> pawarjay2443@gmail.com
+                  <span className="w-2 h-2 rounded-full bg-black/20" /> 
+                  <a href="mailto:pawarjay2443@gmail.com" className="lowercase">pawarjay2443@gmail.com</a>
                 </p>
               </div>
             </motion.div>
